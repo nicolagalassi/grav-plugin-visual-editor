@@ -1,0 +1,30 @@
+name: Visual Editor
+slug: visual-editor
+type: plugin
+version: 1.0.0
+description: 'Scrittura visuale (stile Word) per il testo delle pagine nel pannello Admin2 di Grav 2: il file resta Markdown.'
+icon: pencil
+author:
+  name: Nicola Galassi
+homepage: https://github.com/nicolagalassi/grav-plugin-visual-editor
+bugs: https://github.com/nicolagalassi/grav-plugin-visual-editor/issues
+keywords: editor, wysiwyg, markdown, admin2, prosemirror
+license: MIT
+
+dependencies:
+  - { name: grav, version: '>=2.0.0' }
+  - { name: admin2, version: '>=2.2.0' }
+
+form:
+  validation: loose
+  fields:
+    enabled:
+      type: toggle
+      label: Plugin attivo
+      highlight: 1
+      default: 1
+      options:
+        1: Attivo
+        0: Spento
+      validate:
+        type: bool
