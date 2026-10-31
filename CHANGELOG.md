@@ -1,3 +1,9 @@
+# v1.2.0
+## 31-10-2026
+
+1. [](#improved)
+    * Video caricato solo al clic: prima la pagina mostra un riquadro con ▶ e titolo e non contatta YouTube o Vimeo. Senza JavaScript resta il link al video
+
 # v1.1.0
 ## 31-10-2026
 

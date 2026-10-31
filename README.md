@@ -57,8 +57,10 @@ Le impostazioni arrivano all'editor dentro la definizione del campo (evento `onA
 
 ## Privacy
 
-Un video incorporato carica il lettore di YouTube o Vimeo quando il lettore apre la pagina. L'editor usa
-`youtube-nocookie.com` e Vimeo con `dnt=1`, ma è comunque un servizio di terzi: va indicato nell'informativa.
+Sul sito il video è un riquadro con ▶ e titolo: la pagina non contatta YouTube o Vimeo finché il lettore non
+preme. Solo allora si carica il lettore (`youtube-nocookie.com`, Vimeo con `dnt=1`). È comunque un servizio di
+terzi che si attiva a richiesta: va indicato nell'informativa. Senza JavaScript al posto del riquadro c'è il link
+al video. (Nel pannello l'anteprima di un video YouTube mostra la sua immagine, presa da YouTube.)
 
 ## Installazione
 

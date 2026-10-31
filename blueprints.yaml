@@ -1,7 +1,7 @@
 name: Visual Editor
 slug: visual-editor
 type: plugin
-version: 1.1.0
+version: 1.2.0
 description: 'Scrittura visuale (stile Word) per il testo delle pagine nel pannello Admin2 di Grav 2: il file resta Markdown.'
 icon: pencil
 author:

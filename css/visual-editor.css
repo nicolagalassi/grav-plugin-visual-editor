@@ -15,9 +15,18 @@ img.ve-img-sinistra { float: left; margin-right: 1.25em; }
 img.ve-img-destra { float: right; margin-left: 1.25em; }
 img.ve-img-centro { display: block; width: auto; max-width: min(70%, 100%); height: auto; margin: 1em auto; }
 
-/* Video a tutta larghezza, in 16:9 */
+/* Video a tutta larghezza, in 16:9. Prima del clic: riquadro scuro con ▶ e titolo (nessun contatto con YouTube) */
 .ve-video { margin-block: 1.5em; aspect-ratio: 16 / 9; }
 .ve-video iframe { display: block; width: 100%; height: 100%; border: 0; }
+.ve-video--attesa { display: grid; background: #17140f; color: #fff; }
+.ve-video__avvia { display: grid; place-content: center; justify-items: center; gap: 0.6em; padding: 1.5em; width: 100%; height: 100%;
+  border: 0; background: none; color: inherit; font: inherit; text-align: center; cursor: pointer; }
+.ve-video__play { display: grid; place-items: center; width: 4.5rem; height: 3.1rem; border-radius: 0.9rem; background: #fff; color: #17140f; font-size: 1.4rem; }
+.ve-video__avvia:hover .ve-video__play, .ve-video__avvia:focus-visible .ve-video__play { transform: scale(1.06); }
+.ve-video__avvia:focus-visible { outline: 3px solid #fff; outline-offset: -6px; }
+.ve-video__titolo { font-weight: 600; font-size: 1.1em; }
+.ve-video__nota { font-size: 0.8em; opacity: 0.85; }
+.ve-video__link { place-self: center; padding: 1em; color: inherit; text-align: center; }
 
 /* Sul telefono le foto non stanno affiancate: vanno a tutta larghezza */
 @media (max-width: 600px) {

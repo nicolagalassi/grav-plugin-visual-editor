@@ -97,32 +97,75 @@ class VisualEditorPlugin extends Plugin
     }
 
     /**
-     * Segnaposto scritto dall'editor -> lettore del video. Nel testo non si scrive l'iframe: il pannello
-     * rifiuterebbe il salvataggio come possibile XSS. YouTube nella versione senza cookie di profilazione,
-     * Vimeo con «do not track».
+     * Segnaposto scritto dall'editor -> riquadro del video. Il lettore di YouTube o Vimeo si carica solo quando
+     * il lettore preme ▶: fino ad allora la pagina non contatta servizi di terzi. Senza JavaScript resta il link
+     * al video. Nel testo non si scrive l'iframe: il pannello rifiuterebbe il salvataggio come possibile XSS.
+     * YouTube nella versione senza cookie di profilazione, Vimeo con «do not track».
      */
     public static function inserisciVideo(string $html): string
     {
-        return preg_replace_callback(
+        $trovati = 0;
+        $html = preg_replace_callback(
             '#<div class="ve-video" data-provider="(youtube|vimeo)" data-id="([\w-]+)" data-start="(\d+)" data-title="([^"]*)"></div>#',
-            static function (array $m): string {
+            static function (array $m) use (&$trovati): string {
                 [, $provider, $id, $inizio, $titolo] = $m;
+                $inizio = (int) $inizio;
                 if ($provider === 'youtube' && preg_match('/^[\w-]{6,20}$/', $id)) {
-                    $src = 'https://www.youtube-nocookie.com/embed/' . $id . ((int) $inizio > 0 ? '?start=' . (int) $inizio : '');
+                    $src = 'https://www.youtube-nocookie.com/embed/' . $id . '?autoplay=1' . ($inizio > 0 ? '&start=' . $inizio : '');
+                    $pagina = 'https://www.youtube.com/watch?v=' . $id . ($inizio > 0 ? '&t=' . $inizio : '');
+                    $nome = 'YouTube';
                 } elseif ($provider === 'vimeo' && preg_match('/^\d{1,12}$/', $id)) {
-                    $src = 'https://player.vimeo.com/video/' . $id . '?dnt=1';
+                    $src = 'https://player.vimeo.com/video/' . $id . '?dnt=1&autoplay=1';
+                    $pagina = 'https://vimeo.com/' . $id;
+                    $nome = 'Vimeo';
                 } else {
                     return $m[0];
                 }
-                // Il titolo arriva già codificato come attributo (&quot; &lt; …): si ricodifica in modo sicuro
-                $titolo = htmlspecialchars(html_entity_decode($titolo, ENT_QUOTES | ENT_HTML5, 'UTF-8') ?: 'Video', ENT_QUOTES, 'UTF-8');
+                $trovati++;
+                $e = static fn (string $t): string => htmlspecialchars($t, ENT_QUOTES, 'UTF-8');
+                // Il titolo arriva già codificato come attributo (&quot; &lt; …): si decodifica e ricodifica
+                $titolo = html_entity_decode($titolo, ENT_QUOTES | ENT_HTML5, 'UTF-8') ?: 'Video';
 
-                return '<div class="ve-video"><iframe src="' . $src . '" title="' . $titolo . '" loading="lazy" '
-                    . 'allow="accelerometer; encrypted-media; gyroscope; picture-in-picture; fullscreen" '
-                    . 'referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe></div>';
+                return '<div class="ve-video ve-video--attesa" data-src="' . $e($src) . '" data-title="' . $e($titolo) . '">'
+                    . '<button type="button" class="ve-video__avvia" hidden>'
+                    . '<span class="ve-video__play" aria-hidden="true">▶</span>'
+                    . '<span class="ve-video__titolo">' . $e($titolo) . '</span>'
+                    . '<span class="ve-video__nota">Premi per guardare: il video si carica da ' . $nome . '.</span>'
+                    . '</button>'
+                    . '<a class="ve-video__link" href="' . $e($pagina) . '" rel="noopener" target="_blank">'
+                    . $e($titolo) . ' · guarda su ' . $nome . '</a>'
+                    . '</div>';
             },
             $html
         ) ?? $html;
+
+        if ($trovati === 0) {
+            return $html;
+        }
+
+        // Con JavaScript: al posto del link il pulsante ▶, che al clic mette l'iframe
+        return $html . <<<'HTML'
+<script>
+document.querySelectorAll('.ve-video--attesa').forEach(function (box) {
+  var avvia = box.querySelector('.ve-video__avvia');
+  var link = box.querySelector('.ve-video__link');
+  if (!avvia) return;
+  avvia.hidden = false;
+  link.hidden = true;
+  avvia.addEventListener('click', function () {
+    var f = document.createElement('iframe');
+    f.src = box.dataset.src;
+    f.title = box.dataset.title;
+    f.allow = 'accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture; fullscreen';
+    f.referrerPolicy = 'strict-origin-when-cross-origin';
+    f.allowFullscreen = true;
+    box.classList.remove('ve-video--attesa');
+    box.replaceChildren(f);
+    f.focus();
+  });
+});
+</script>
+HTML;
     }
 
     /**
