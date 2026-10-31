@@ -1,0 +1,26 @@
+/* Visual Editor: forme scritte dall'editor. Il tema può ridefinirle (questo foglio arriva prima del suo). */
+
+.ve-centro { text-align: center; }
+.ve-destra { text-align: right; }
+.ve-giustificato { text-align: justify; hyphens: auto; }
+
+/* Foto affiancate al testo, come in un programma di videoscrittura */
+img.ve-img-sinistra,
+img.ve-img-destra {
+  width: min(45%, 22rem);
+  height: auto;
+  margin-block: 0.35em 0.8em;
+}
+img.ve-img-sinistra { float: left; margin-right: 1.25em; }
+img.ve-img-destra { float: right; margin-left: 1.25em; }
+img.ve-img-centro { display: block; width: auto; max-width: min(70%, 100%); height: auto; margin: 1em auto; }
+
+/* Video a tutta larghezza, in 16:9 */
+.ve-video { margin-block: 1.5em; aspect-ratio: 16 / 9; }
+.ve-video iframe { display: block; width: 100%; height: 100%; border: 0; }
+
+/* Sul telefono le foto non stanno affiancate: vanno a tutta larghezza */
+@media (max-width: 600px) {
+  img.ve-img-sinistra,
+  img.ve-img-destra { float: none; width: 100%; margin: 1em 0; }
+}

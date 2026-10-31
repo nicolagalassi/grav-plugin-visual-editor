@@ -38,5 +38,43 @@ for (const f of file) {
     if (!uguale || !ok) console.log('--- prima\n' + testo.trim() + '\n--- dopo\n' + md1.trim() + '\n');
   }
 }
+// Le forme proprie dell'editor (allineamento, dimensioni, foto affiancate, video): devono tornare identiche.
+const ESEMPIO = `Paragrafo centrato con <span class="ve-size-grande">parole **grandi**</span> e altro. {.ve-centro}
+
+## Titolo a destra {.ve-destra}
+
+Testo giustificato  
+su due righe. {.ve-giustificato}
+
+![Il tiro alla fune](<Palio 2026_Paola (833).JPG?classes=ve-img-sinistra>)
+
+![Altra](foto.jpg?cropResize=300,200&classes=ve-img-destra)
+
+<div class="ve-video" data-provider="youtube" data-id="dQw4w9WgXcQ" data-start="42" data-title="Il &quot;video&quot; &lt;3"></div>
+
+<div class="ve-video" data-provider="vimeo" data-id="76979871" data-start="0" data-title=""></div>
+
+- punto <span class="ve-size-piccolo">piccolo</span> {.ve-centro}
+`;
+{
+  const motivo = incompatibile(ESEMPIO);
+  const md1 = motivo ? '' : aMarkdown(daMarkdown(ESEMPIO));
+  const ok = !motivo && md1 === ESEMPIO;
+  if (!ok) {
+    errori++;
+    console.log(`ERRORE  esempio delle forme dell'editor${motivo ? `: ${motivo}` : ''}\n--- prima\n${ESEMPIO}--- dopo\n${md1}`);
+  } else console.log('OK  esempio delle forme dell\'editor');
+  for (const [nome, t] of [
+    ['span non chiuso', 'a <span class="ve-size-grande">b\n'],
+    ['altro HTML', '<div class="x">a</div>\n'],
+    ['iframe', '<iframe src="https://example.com"></iframe>\n'],
+    ['video di altro sito', '<div class="ve-video" data-provider="altro" data-id="x" data-start="0" data-title=""></div>\n'],
+  ]) {
+    const m = incompatibile(t);
+    if (!m) errori++;
+    console.log(`${m ? 'OK' : 'ERRORE'}  ${nome} -> ${m || 'aperto nell\'editor visuale'}`);
+  }
+}
+
 console.log(`\n${file.length} pagine, ${errori} errori`);
 process.exit(errori ? 1 : 0);

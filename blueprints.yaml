@@ -1,7 +1,7 @@
 name: Visual Editor
 slug: visual-editor
 type: plugin
-version: 1.0.0
+version: 1.1.0
 description: 'Scrittura visuale (stile Word) per il testo delle pagine nel pannello Admin2 di Grav 2: il file resta Markdown.'
 icon: pencil
 author:
@@ -28,3 +28,52 @@ form:
         0: Spento
       validate:
         type: bool
+
+    dimensioni:
+      type: list
+      label: Dimensioni del testo
+      help: "Le scelte del menu «Dimensione» dell'editor, oltre a «Normale». Valore in em, rem, % o px (es. 1.25em). Non cambiare la chiave di una dimensione già usata negli articoli: il testo tornerebbe normale."
+      btnLabel: Aggiungi una dimensione
+      fields:
+        .nome:
+          type: text
+          label: Nome nel menu
+        .chiave:
+          type: text
+          label: Chiave (minuscole e trattini)
+        .valore:
+          type: text
+          label: Dimensione
+
+    video:
+      type: toggle
+      label: Video YouTube e Vimeo
+      help: "Il pulsante «Video» dell'editor. I video si vedono con la versione di YouTube senza cookie di profilazione e con Vimeo in modalità «do not track»."
+      highlight: 1
+      default: 1
+      options:
+        1: Attivo
+        0: Spento
+      validate:
+        type: bool
+
+    aspetto:
+      type: section
+      title: Aspetto dell'editor
+      underline: true
+
+    caratteri:
+      type: text
+      label: Foglio dei caratteri
+      help: 'Percorso dalla radice del sito del CSS con i @font-face, es. user/themes/mio-tema/css/fonts.css. Vuoto: caratteri di sistema.'
+    font_testo:
+      type: text
+      label: Carattere del testo
+      help: "Come in CSS, es. 'Newsreader Variable', Georgia, serif"
+    font_titoli:
+      type: text
+      label: Carattere dei titoli
+    accento:
+      type: text
+      label: Colore di accento
+      help: Per link, citazioni e selezione, es. #c4004a

@@ -1,1 +1,11 @@
 enabled: true
+# Foglio con i @font-face del sito (percorso dalla radice), per vedere nell'editor i caratteri del sito
+caratteri: ''
+font_testo: ''
+font_titoli: ''
+accento: ''
+video: true
+dimensioni:
+  - { chiave: piccolo, nome: Piccolo, valore: 0.875em }
+  - { chiave: grande, nome: Grande, valore: 1.25em }
+  - { chiave: molto-grande, nome: Molto grande, valore: 1.6em }
